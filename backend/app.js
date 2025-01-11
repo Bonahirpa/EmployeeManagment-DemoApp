@@ -38,7 +38,7 @@ app.use((req, res, next) => {
 // Post request handler to add a new employee to the database
 app.post("/add-employee", (req, res) => {
   // console.log(req.body);
-  // Write the sql query to add to the database table named employee_test
+  // Write the sql query to add to the database table named demoapp
   const sql = `INSERT INTO demoapp (first_name, last_name, email, password) VALUES ('${req.body.first_name}', '${req.body.last_name}', '${req.body.email}', '${req.body.password}')`;
   // Execute the query
   connection.query(sql, function (err, result) {
@@ -53,6 +53,29 @@ app.post("/add-employee", (req, res) => {
   res.status(200).json(response);
 });
 
+// Post request handler for login with path /login
+app.post("/login", (req, res) => {
+  // Write the sql query to get the employee from the database table named demoapp
+  const sql = `SELECT * FROM demoapp WHERE email = '${req.body.email}' AND password = '${req.body.password}'`;
+  // Execute the query
+  connection.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log(result);
+    if (result.length > 0) {
+      const response = {
+        status: "success",
+        message: "Login successful",
+      };
+      res.status(200).json(response);
+    } else {
+      const response = {
+        status: "error",
+        message: "Invalid email or password",
+      };
+      res.status(200).json(response);
+    }
+  });
+});     
 // Set up the port to listen to 
 const port = 5500;
 // Set up the listener 
